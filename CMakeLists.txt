@@ -1,4 +1,5 @@
 # Project information.
+include (config.cmake)
 cmake_minimum_required( VERSION 3.5.0 )
 project( AwsIotDeviceSdkEmbeddedC
          VERSION 4.0.0
@@ -10,6 +11,10 @@ set_property( GLOBAL PROPERTY USE_FOLDERS ON )
 # Use C99.
 set( CMAKE_C_STANDARD 99 )
 set( CMAKE_C_STANDARD_REQUIRED ON )
+
+set(OPENSSL_CRYPTO_LIBRARY "${PROJECT_SOURCE_DIR}/third_party/openssl/lib/libcrypto.so")
+set(OPENSSL_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/third_party/openssl/include")
+set(OPENSSL_SSL_LIBRARY "${PROJECT_SOURCE_DIR}/third_party/openssl/lib/libssl.so")
 
 # Do not allow in-source build.
 if( ${PROJECT_SOURCE_DIR} STREQUAL ${PROJECT_BINARY_DIR} )
@@ -28,7 +33,7 @@ option( IOT_BUILD_CLONE_SUBMODULES
         ON )
 
 # Unity test framework does not export the correct symbols for DLLs.
-set( ALLOW_SHARED_LIBRARIES ON )
+set( ALLOW_SHARED_LIBRARIES OFF )
 
 include( CMakeDependentOption )
 CMAKE_DEPENDENT_OPTION( BUILD_SHARED_LIBS

@@ -2,13 +2,7 @@ include( CheckTypeSize )
 include( CheckFunctionExists )
 
 # Check that the POSIX realtime library is available.
-find_library( LIB_REALTIME rt )
 
-if( ${LIB_REALTIME} STREQUAL "LIB_REALTIME-NOTFOUND" )
-    message( FATAL_ERROR "POSIX realtime library (librt) is not available." )
-endif()
-
-unset( LIB_REALTIME CACHE )
 
 # Check for POSIX threads.
 find_package( Threads REQUIRED )
@@ -57,9 +51,7 @@ if( ${IOT_NETWORK_USE_OPENSSL} )
 
     # Minimum supported OpenSSL version is 1.0.2g.
     if( ${OPENSSL_FOUND} )
-        if( ${OPENSSL_VERSION} STRLESS "1.0.2g" )
-            message( FATAL_ERROR "OpenSSL 1.0.2g or later required, found ${OPENSSL_VERSION}." )
-        endif()
+
 
         # Choose OpenSSL network source file.
         set( NETWORK_HEADER ${PORTS_DIRECTORY}/common/include/iot_network_openssl.h )

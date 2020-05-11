@@ -27,13 +27,13 @@
 /* Server endpoints used for the demos. May be overridden with command line
  * options at runtime. */
 #define IOT_DEMO_SECURED_CONNECTION    ( true ) /* Command line: -s (secured) or -u (unsecured) */
-#define IOT_DEMO_SERVER                ""       /* Command line: -h */
+#define IOT_DEMO_SERVER                "a1q03082l60f30-ats.iot.us-east-1.amazonaws.com"       /* Command line: -h */
 #define IOT_DEMO_PORT                  ( 443 )  /* Command line: -p */
 
 /* Credential paths. May be overridden with command line options at runtime. */
-#define IOT_DEMO_ROOT_CA               "" /* Command line: -r */
-#define IOT_DEMO_CLIENT_CERT           "" /* Command line: -c */
-#define IOT_DEMO_PRIVATE_KEY           "" /* Command line: -k */
+#define IOT_DEMO_ROOT_CA               "/var/fat32_0/certs/AmazonRootCA1.pem" /* Command line: -r */
+#define IOT_DEMO_CLIENT_CERT           "/var/fat32_0/certs/5ecfde13c2-certificate.pem.crt" /* Command line: -c */
+#define IOT_DEMO_PRIVATE_KEY           "/var/fat32_0/certs/5ecfde13c2-private.pem" /* Command line: -k */
 #define IOT_DEMO_USER_NAME             "" /* Command line: -m */
 #define IOT_DEMO_PASSWORD              "" /* Command line: -w */
 
@@ -43,6 +43,8 @@
  * generate a unique identifier if no identifier is given). If a specific Thing Name
  * is required please define the following line:
  * #define IOT_DEMO_IDENTIFIER         "" */
+#define IOT_DEMO_IDENTIFIER         "MyIotThing"
+
 
 /* MQTT demo configuration. The demo publishes bursts of messages. */
 #define IOT_DEMO_MQTT_PUBLISH_BURST_COUNT    ( 10 )    /* Number of message bursts. */

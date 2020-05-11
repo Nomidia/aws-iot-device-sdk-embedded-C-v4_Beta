@@ -89,6 +89,10 @@ foreach( i RANGE ${DEMO_COUNT} )
         target_link_libraries( ${DEMO_EXE_NAME} PRIVATE unity )
     endif()
 
+    target_link_libraries( ${DEMO_EXE_NAME} PRIVATE 
+					${OPENSSL_CRYPTO_LIBRARY}
+                    ${OPENSSL_SSL_LIBRARY})
+	
     # Organize the demo into folders.
     set_property( TARGET ${DEMO_EXE_NAME} PROPERTY FOLDER demos )
     source_group( app FILES ${DEMO_APP_SOURCES} )
