@@ -33,8 +33,8 @@ TOPIC_LENGTH_MAX=6
 DEF += -DTOPIC_LENGTH_MAX=$(TOPIC_LENGTH_MAX)
 
 # Bound the remaing length of a packet (BOUND = MAX-1)
-REMAINING_LENGTH_BOUND=15
-DEF += -DREMAINING_LENGTH_BOUND=$(REMAINING_LENGTH_BOUND)
+CBMC_REMAINING_LENGTH_BOUND=15
+DEF += -DCBMC_REMAINING_LENGTH_BOUND=$(CBMC_REMAINING_LENGTH_BOUND)
 
 # A constant that should be 2*SUBSCRIPTION_COUNT_MAX-1
 SUBSCRIPTION_LIST_MAX=3
@@ -55,6 +55,11 @@ DEF += -DCBMC_STUB_REMOVEALLMATCHES=1
 
 OBJS += $(MQTT)/cbmc/proofs/$(ENTRY)/$(ENTRY)_harness.goto
 OBJS += $(MQTT)/cbmc/proofs/mqtt_state.goto
+OBJS += $(MQTT)/cbmc/stubs/_IotMqtt_Notify.goto
+OBJS += $(MQTT)/cbmc/stubs/IotListDouble_RemoveAll.goto
+OBJS += $(MQTT)/cbmc/stubs/IotListDouble_RemoveAllMatches.goto
+OBJS += $(MQTT)/cbmc/stubs/IotTaskPool_CreateJob.goto
+OBJS += $(MQTT)/cbmc/stubs/IotTaskPool_ScheduleDeferred.goto
 OBJS += $(MQTT)/libraries/standard/mqtt/src/iot_mqtt_api.goto
 OBJS += $(MQTT)/libraries/standard/mqtt/src/iot_mqtt_helper.goto
 OBJS += $(MQTT)/libraries/standard/mqtt/src/iot_mqtt_network.goto
@@ -78,7 +83,7 @@ LOOP += IotListDouble_FindFirstMatch\$$link4.0:$(SUBSCRIPTION_COUNT_MAX)
 LOOP += IotListDouble_FindFirstMatch\$$link5.0:$(SUBSCRIPTION_COUNT_MAX)
 
 LOOP += _IotMqtt_GetRemainingLength.0:5
-LOOP += _decodeSubackStatus.0:$(REMAINING_LENGTH_BOUND)
+LOOP += _decodeSubackStatus.0:$(CBMC_REMAINING_LENGTH_BOUND)
 LOOP += valid_IotMqttOperationList.0:$(OPERATION_COUNT_MAX)
 LOOP += valid_IotMqttSubscriptionList.0:$(SUBSCRIPTION_COUNT_MAX)
 
