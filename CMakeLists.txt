@@ -12,7 +12,7 @@ set_property( GLOBAL PROPERTY USE_FOLDERS ON )
 set( CMAKE_C_STANDARD 99 )
 set( CMAKE_C_STANDARD_REQUIRED ON )
 
-if(IOT_ATOMIC_USE_PORT)
+if(IOT_NETWORK_USE_OPENSSL)
 	set(OPENSSL_CRYPTO_LIBRARY "${PROJECT_SOURCE_DIR}/third_party/openssl/lib/libcrypto.so")
 	set(OPENSSL_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/third_party/openssl/include")
 	set(OPENSSL_SSL_LIBRARY "${PROJECT_SOURCE_DIR}/third_party/openssl/lib/libssl.so")

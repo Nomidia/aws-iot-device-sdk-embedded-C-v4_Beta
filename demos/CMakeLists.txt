@@ -96,7 +96,7 @@ foreach( i RANGE ${DEMO_COUNT} )
         target_link_libraries( ${DEMO_EXE_NAME} PRIVATE unity )
     endif()
 
-if(IOT_ATOMIC_USE_PORT)
+if(IOT_NETWORK_USE_OPENSSL)
     target_link_libraries( ${DEMO_EXE_NAME} PRIVATE 
 					${OPENSSL_CRYPTO_LIBRARY}
                     ${OPENSSL_SSL_LIBRARY})
