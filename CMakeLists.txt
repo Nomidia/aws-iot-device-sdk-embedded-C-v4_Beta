@@ -12,10 +12,11 @@ set_property( GLOBAL PROPERTY USE_FOLDERS ON )
 set( CMAKE_C_STANDARD 99 )
 set( CMAKE_C_STANDARD_REQUIRED ON )
 
-set(OPENSSL_CRYPTO_LIBRARY "${PROJECT_SOURCE_DIR}/third_party/openssl/lib/libcrypto.so")
-set(OPENSSL_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/third_party/openssl/include")
-set(OPENSSL_SSL_LIBRARY "${PROJECT_SOURCE_DIR}/third_party/openssl/lib/libssl.so")
-
+if(IOT_ATOMIC_USE_PORT)
+	set(OPENSSL_CRYPTO_LIBRARY "${PROJECT_SOURCE_DIR}/third_party/openssl/lib/libcrypto.so")
+	set(OPENSSL_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/third_party/openssl/include")
+	set(OPENSSL_SSL_LIBRARY "${PROJECT_SOURCE_DIR}/third_party/openssl/lib/libssl.so")
+endif()
 # Do not allow in-source build.
 if( ${PROJECT_SOURCE_DIR} STREQUAL ${PROJECT_BINARY_DIR} )
     message( FATAL_ERROR "In-source build is not allowed. Please build in a separate directory, such as ${PROJECT_SOURCE_DIR}/build." )
