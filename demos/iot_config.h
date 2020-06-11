@@ -24,6 +24,10 @@
 #ifndef IOT_CONFIG_H_
 #define IOT_CONFIG_H_
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /* Server endpoints used for the demos. May be overridden with command line
  * options at runtime. */
 #define IOT_DEMO_SECURED_CONNECTION    ( true ) /* Command line: -s (secured) or -u (unsecured) */
@@ -129,5 +133,9 @@
 /* The build system will choose the appropriate system types file for the platform
  * layer based on the host operating system. */
 #include IOT_SYSTEM_TYPES_FILE
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* ifndef IOT_CONFIG_H_ */

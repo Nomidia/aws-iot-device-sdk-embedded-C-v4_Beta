@@ -28,6 +28,10 @@
 #ifndef IOT_SERIALIZER_H_
 #define IOT_SERIALIZER_H_
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /* The config header is always included first. */
 #include "iot_config.h"
 
@@ -563,5 +567,9 @@ const IotSerializerDecodeInterface_t * IotSerializer_GetCborDecoder( void );
 const IotSerializerEncodeInterface_t * IotSerializer_GetJsonEncoder( void );
 
 const IotSerializerDecodeInterface_t * IotSerializer_GetJsonDecoder( void );
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* ifndef IOT_SERIALIZER_H_ */

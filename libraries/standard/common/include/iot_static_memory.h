@@ -29,6 +29,10 @@
 #ifndef IOT_STATIC_MEMORY_H_
 #define IOT_STATIC_MEMORY_H_
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+	
 /* The config header is always included first. */
 #include "iot_config.h"
 
@@ -197,4 +201,9 @@
 /* @[declare_static_memory_freemessagebuffer] */
 
 #endif /* if ( IOT_STATIC_MEMORY_ONLY == 1 ) */
+
+#ifdef __cplusplus
+}
+#endif
+	
 #endif /* ifndef IOT_STATIC_MEMORY_H_ */

@@ -27,6 +27,10 @@
 #ifndef AWS_IOT_PROVISIONING_TYPES_H_
 #define AWS_IOT_PROVISIONING_TYPES_H_
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /* The config header is always included first. */
 #include "iot_config.h"
 
@@ -553,5 +557,9 @@ typedef struct AwsIotProvisioningRegisterThingCallbackInfo
  * value when using to enable credentials encryption in the response from the server.
  */
 #define AWS_IOT_PROVISIONING_FLAG_ENCRYPT_CREDENTIALS    0x00000001
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* ifndef AWS_IOT_PROVISIONING_TYPES_H_ */

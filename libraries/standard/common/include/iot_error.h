@@ -31,6 +31,10 @@
 #ifndef IOT_ERROR_H_
 #define IOT_ERROR_H_
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /* The config header is always included first. */
 #include "iot_config.h"
 
@@ -110,5 +114,9 @@
  */
 #define IOT_VALIDATE_PARAMETER( libraryPrefix, condition ) \
     IOT_SET_AND_GOTO_CLEANUP_IF_FALSE( libraryPrefix ## _BAD_PARAMETER, condition )
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* ifndef IOT_ERROR_H_ */

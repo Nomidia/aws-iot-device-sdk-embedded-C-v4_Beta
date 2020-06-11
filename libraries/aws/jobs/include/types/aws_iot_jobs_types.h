@@ -28,6 +28,10 @@
 #ifndef AWS_IOT_JOBS_TYPES_H_
 #define AWS_IOT_JOBS_TYPES_H_
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /* The config header is always included first. */
 #include "iot_config.h"
 
@@ -1007,5 +1011,9 @@ typedef struct AwsIotJobsUpdateInfo
  * this flag for Thing Names with any in-progress Jobs update operations.
  */
 #define AWS_IOT_JOBS_FLAG_REMOVE_UPDATE_SUBSCRIPTIONS         ( 0x00000008 )
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* ifndef AWS_IOT_JOBS_TYPES_H_ */

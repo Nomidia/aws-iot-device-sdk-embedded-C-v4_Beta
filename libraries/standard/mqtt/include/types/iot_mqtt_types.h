@@ -28,6 +28,10 @@
 #ifndef IOT_MQTT_TYPES_H_
 #define IOT_MQTT_TYPES_H_
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /* The config header is always included first. */
 #include "iot_config.h"
 
@@ -1170,5 +1174,9 @@ typedef struct IotMqttNetworkInfo
  * unusable.
  */
 #define IOT_MQTT_FLAG_CLEANUP_ONLY    ( 0x00000001UL )
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* ifndef IOT_MQTT_TYPES_H_ */

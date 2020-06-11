@@ -29,6 +29,10 @@
 #ifndef IOT_ATOMIC_GCC_H_
 #define IOT_ATOMIC_GCC_H_
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /* Standard includes. */
 #include <stdbool.h>
 #include <stdint.h>
@@ -249,5 +253,9 @@ static FORCE_INLINE uint32_t Atomic_NAND_u32( uint32_t volatile * pOperand,
     /* coverity[caretline] */
     return ( uint32_t ) ( __atomic_fetch_nand( pOperand, mask, __ATOMIC_SEQ_CST ) );
 }
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* IOT_ATOMIC_GCC_H_ */

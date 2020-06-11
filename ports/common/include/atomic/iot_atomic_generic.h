@@ -30,6 +30,10 @@
 #ifndef IOT_ATOMIC_GENERIC_H_
 #define IOT_ATOMIC_GENERIC_H_
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /* Standard includes. */
 #include <stdint.h>
 
@@ -355,5 +359,9 @@ static inline uint32_t Atomic_NAND_u32( uint32_t volatile * pOperand,
 
     return oldValue;
 }
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* ifndef IOT_ATOMIC_GENERIC_H_ */

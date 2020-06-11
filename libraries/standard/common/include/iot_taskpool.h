@@ -28,6 +28,10 @@
 #ifndef IOT_TASKPOOL_H_
 #define IOT_TASKPOOL_H_
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /* The config header is always included first. */
 #include "iot_config.h"
 
@@ -549,6 +553,10 @@ const char * IotTaskPool_strerror( IotTaskPoolError_t status );
  */
 #ifndef IOT_TASKPOOL_JOB_WAIT_TIMEOUT_MS
     #define IOT_TASKPOOL_JOB_WAIT_TIMEOUT_MS    ( 60 * 1000UL )
+#endif
+
+#ifdef __cplusplus
+extern "C" {
 #endif
 
 #endif /* ifndef IOT_TASKPOOL_H_ */

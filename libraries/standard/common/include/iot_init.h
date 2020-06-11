@@ -29,6 +29,10 @@
 #ifndef IOT_INIT_H_
 #define IOT_INIT_H_
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /* The config header is always included first. */
 #include "iot_config.h"
 
@@ -60,5 +64,9 @@ bool IotSdk_Init( void );
  * @warning No thread-safety guarantees are provided for this function.
  */
 void IotSdk_Cleanup( void );
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* IOT_INIT_H_ */

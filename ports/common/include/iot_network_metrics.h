@@ -30,6 +30,10 @@
 #ifndef IOT_NETWORK_METRICS_H_
 #define IOT_NETWORK_METRICS_H_
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /* The config header is always included first. */
 #include "iot_config.h"
 
@@ -49,5 +53,9 @@
  * @brief Retrieve the network interface with metrics.
  */
 const IotNetworkInterface_t * IotNetworkMetrics_GetInterface( void );
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* ifndef IOT_NETWORK_METRICS_H_ */

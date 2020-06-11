@@ -35,6 +35,10 @@
 #ifndef AWS_IOT_DOC_PARSER_H_
 #define AWS_IOT_DOC_PARSER_H_
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /* Standard includes. */
 #include <stdbool.h>
 #include <stddef.h>
@@ -65,5 +69,9 @@ bool AwsIotDocParser_FindValue( const char * pAwsIotJsonDocument,
                                 size_t awsIotJsonKeyLength,
                                 const char ** pAwsIotJsonValue,
                                 size_t * pAwsIotJsonValueLength );
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* ifndef AWS_IOT_DOC_PARSER_H_ */

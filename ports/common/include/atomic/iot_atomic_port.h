@@ -2,6 +2,10 @@
 #ifndef IOT_ATOMIC_PORT_H_
 #define IOT_ATOMIC_PORT_H_
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /*---------------- Swap and compare-and-swap ------------------*/
 
 /**
@@ -128,5 +132,9 @@ static inline uint32_t Atomic_NAND_u32( uint32_t volatile * pOperand,
 {
     return ( uint32_t ) ( __sync_fetch_and_nand( pOperand, mask) );
 }
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* IOT_ATOMIC_PORT_H_ */

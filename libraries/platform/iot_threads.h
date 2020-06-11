@@ -28,6 +28,10 @@
 #ifndef IOT_THREADS_H_
 #define IOT_THREADS_H_
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /* The config header is always included first. */
 #include "iot_config.h"
 
@@ -350,5 +354,9 @@ bool IotSemaphore_TimedWait( IotSemaphore_t * pSemaphore,
 /* @[declare_platform_threads_semaphorepost] */
 void IotSemaphore_Post( IotSemaphore_t * pSemaphore );
 /* @[declare_platform_threads_semaphorepost] */
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* ifndef IOT_THREADS_H_ */

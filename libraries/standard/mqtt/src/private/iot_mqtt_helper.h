@@ -28,6 +28,10 @@
 #ifndef IOT_MQTT_HELPER_H_
 #define IOT_MQTT_HELPER_H_
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /* Standard includes. */
 #include <string.h>
 #include <limits.h>
@@ -245,5 +249,9 @@ uint16_t _IotMqtt_NextPacketIdentifier( void );
 
 IotMqttError_t _IotMqtt_ProcessPublishFlags( uint8_t publishFlags,
                                              IotMqttPublishInfo_t * pOutput );
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* ifndef IOT_MQTT_HELPER_H_ */

@@ -28,6 +28,10 @@
 #ifndef AWS_IOT_DEFENDER_H_
 #define AWS_IOT_DEFENDER_H_
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /* The config header is always included first. */
 #include "iot_config.h"
 
@@ -402,4 +406,9 @@ const char * AwsIotDefender_strerror( AwsIotDefenderError_t error );
 /* @[declare_defender_EventType] */
 const char * AwsIotDefender_EventType( AwsIotDefenderEventType_t eventType );
 /* @[declare_defender_EventType] */
+
+#ifdef __cplusplus
+}
+#endif
+
 #endif /* AWS_IOT_DEFENDER_H_ */

@@ -29,6 +29,10 @@
 #ifndef IOT_MQTT_INTERNAL_H_
 #define IOT_MQTT_INTERNAL_H_
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /* The config header is always included first. */
 #include "iot_config.h"
 
@@ -1021,5 +1025,9 @@ void _IotMqtt_CloseNetworkConnection( IotMqttDisconnectReason_t disconnectReason
         return returnValue;                                                                     \
     }
 #endif /* if IOT_MQTT_ENABLE_SERIALIZER_OVERRIDES == 1 */
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* ifndef IOT_MQTT_INTERNAL_H_ */

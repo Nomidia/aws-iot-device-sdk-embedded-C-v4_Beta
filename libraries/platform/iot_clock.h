@@ -28,6 +28,10 @@
 #ifndef IOT_CLOCK_H_
 #define IOT_CLOCK_H_
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /* The config header is always included first. */
 #include "iot_config.h"
 
@@ -209,5 +213,10 @@ bool IotClock_TimerArm( IotTimer_t * pTimer,
                         uint32_t relativeTimeoutMs,
                         uint32_t periodMs );
 /* @[declare_platform_clock_timerarm] */
+
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* ifndef IOT_CLOCK_H_ */

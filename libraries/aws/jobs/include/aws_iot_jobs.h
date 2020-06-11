@@ -28,6 +28,10 @@
 #ifndef AWS_IOT_JOBS_H_
 #define AWS_IOT_JOBS_H_
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /* The config header is always included first. */
 #include "iot_config.h"
 
@@ -923,5 +927,9 @@ const char * AwsIotJobs_strerror( AwsIotJobsError_t status );
 /* @[declare_jobs_statename] */
 const char * AwsIotJobs_StateName( AwsIotJobState_t state );
 /* @[declare_jobs_statename] */
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* ifndef AWS_IOT_JOBS_H_ */

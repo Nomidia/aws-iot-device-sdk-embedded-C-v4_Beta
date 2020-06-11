@@ -28,6 +28,10 @@
 #ifndef IOT_TASKPOOL_TYPES_H_
 #define IOT_TASKPOOL_TYPES_H_
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /* The config header is always included first. */
 #include "iot_config.h"
 
@@ -296,5 +300,9 @@ typedef struct IotTaskPoolInfo
  * called before the handle is used.
  */
 #define IOT_SYSTEM_TASKPOOL               ( IotTaskPool_GetSystemTaskPool() )
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* ifndef IOT_TASKPOOL_TYPES_H_ */

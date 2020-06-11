@@ -28,6 +28,11 @@
 #ifndef IOT_NETWORK_H_
 #define IOT_NETWORK_H_
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+
 /* The config header is always included first. */
 #include "iot_config.h"
 
@@ -364,5 +369,9 @@ struct IotNetworkCredentials
     const char * pPassword;   /**< @brief String representing the password for MQTT. */
     size_t passwordSize;      /**< @brief Size associated with #IotNetworkCredentials.pPassword. */
 };
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* ifndef IOT_NETWORK_H_ */

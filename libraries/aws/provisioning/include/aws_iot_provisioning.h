@@ -27,6 +27,10 @@
 #ifndef AWS_IOT_PROVISIONING_H_
 #define AWS_IOT_PROVISIONING_H_
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /* The config header is always included first. */
 #include "iot_config.h"
 
@@ -315,5 +319,9 @@ void AwsIotProvisioning_Cleanup( void );
 /* @[declare_provisioning_strerror] */
 const char * AwsIotProvisioning_strerror( AwsIotProvisioningError_t status );
 /* @[declare_provisioning_strerror] */
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* ifndef AWS_IOT_PROVISIONING_H_ */

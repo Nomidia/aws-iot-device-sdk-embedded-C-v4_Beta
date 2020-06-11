@@ -34,6 +34,10 @@
 #ifndef IOT_LOGGING_H_
 #define IOT_LOGGING_H_
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /* The config header is always included first. */
 #include "iot_config.h"
 
@@ -222,5 +226,9 @@ void IotLog_GenericPrintBuffer( const char * const pLibraryName,
                                 const uint8_t * const pBuffer,
                                 size_t bufferSize );
 /* @[declare_logging_genericprintbuffer] */
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* ifndef IOT_LOGGING_H_ */

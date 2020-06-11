@@ -30,6 +30,10 @@
 #ifndef _IOT_MQTT_LIGHTWEIGHT_H_
 #define _IOT_MQTT_LIGHTWEIGHT_H_
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /* The config header is always included first. */
 #include "iot_config.h"
 
@@ -697,6 +701,8 @@ IotMqttError_t IotMqtt_DeserializePublish( IotMqttPacketInfo_t * pMqttPacket );
 IotMqttError_t IotMqtt_DeserializeResponse( IotMqttPacketInfo_t * pMqttPacket );
 /* @[declare_mqtt_deserializeresponse] */
 
-
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* ifndef IOT_MQTT_SERIALIZE_H_ */

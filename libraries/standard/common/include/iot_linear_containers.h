@@ -28,6 +28,10 @@
 #ifndef IOT_LINEAR_CONTAINERS_H_
 #define IOT_LINEAR_CONTAINERS_H_
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /* The config header is always included first. */
 #include "iot_config.h"
 
@@ -955,4 +959,8 @@ static inline void IotDeQueue_RemoveAllMatches( const IotDeQueue_t * const pQueu
     IotListDouble_RemoveAllMatches( pQueue, isMatch, pMatch, freeElement, linkOffset );
 }
 
+#ifdef __cplusplus
+}
+#endif
+	
 #endif /* IOT_LINEAR_CONTAINERS_H_ */

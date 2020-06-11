@@ -28,6 +28,10 @@
 #ifndef IOT_MQTT_H_
 #define IOT_MQTT_H_
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /* The config header is always included first. */
 #include "iot_config.h"
 
@@ -864,5 +868,9 @@ bool IotMqtt_IsSubscribed( IotMqttConnection_t mqttConnection,
 #define IotMqtt_Publish             IotMqtt_PublishAsync
 #define IotMqtt_TimedPublish        IotMqtt_PublishSync
 /** @endcond */
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* ifndef IOT_MQTT_H_ */

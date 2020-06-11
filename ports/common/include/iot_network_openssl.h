@@ -28,6 +28,10 @@
 #ifndef IOT_NETWORK_OPENSSL_H_
 #define IOT_NETWORK_OPENSSL_H_
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /* The config header is always included first. */
 #include "iot_config.h"
 
@@ -176,5 +180,9 @@ IotNetworkError_t IotNetworkOpenssl_Destroy( IotNetworkConnection_t pConnection 
  * a connection.
  */
 int IotNetworkOpenssl_GetSocket( IotNetworkConnection_t pConnection );
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* ifndef IOT_NETWORK_OPENSSL_H_ */

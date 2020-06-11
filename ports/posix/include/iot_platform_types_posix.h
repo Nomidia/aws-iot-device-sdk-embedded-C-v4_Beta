@@ -27,6 +27,10 @@
 #ifndef IOT_PLATFORM_TYPES_POSIX_H_
 #define IOT_PLATFORM_TYPES_POSIX_H_
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /* POSIX includes. Allow the default POSIX headers to be overridden. */
 #ifdef POSIX_TYPES_HEADER
     #include POSIX_TYPES_HEADER
@@ -84,5 +88,9 @@ typedef struct IotNetworkCredentials * _IotNetworkCredentials_t;
  * @brief The handle of a network connection on this system.
  */
 typedef struct _networkConnection * _IotNetworkConnection_t;
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* ifndef IOT_PLATFORM_TYPES_POSIX_H_ */

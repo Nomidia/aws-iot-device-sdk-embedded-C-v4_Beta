@@ -30,6 +30,9 @@
 #ifndef IOT_MQTT_PROTOCOL_H_
 #define IOT_MQTT_PROTOCOL_H_
 
+#ifdef __cplusplus
+extern "C" {
+#endif
 /*
  * MQTT control packet type and flags. Always the first byte of an MQTT
  * packet.
@@ -135,6 +138,8 @@
  */
 #define MQTT_PACKET_DISCONNECT_SIZE                 ( 2U ) /**< @brief A DISCONNECT packet is always 2 bytes in size. */
 
-
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* ifndef _IOT_MQTT_PROTOCOL_H_ */

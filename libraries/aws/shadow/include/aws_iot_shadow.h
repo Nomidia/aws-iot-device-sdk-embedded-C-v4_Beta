@@ -28,6 +28,10 @@
 #ifndef AWS_IOT_SHADOW_H_
 #define AWS_IOT_SHADOW_H_
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /* The config header is always included first. */
 #include "iot_config.h"
 
@@ -905,5 +909,9 @@ const char * AwsIotShadow_strerror( AwsIotShadowError_t status );
 #define AwsIotShadow_Update         AwsIotShadow_UpdateAsync
 #define AwsIotShadow_TimedUpdate    AwsIotShadow_UpdateSync
 /** @endcond */
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* ifndef AWS_IOT_SHADOW_H_ */

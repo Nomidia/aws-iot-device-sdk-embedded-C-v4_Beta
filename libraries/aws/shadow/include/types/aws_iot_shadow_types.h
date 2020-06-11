@@ -28,6 +28,10 @@
 #ifndef AWS_IOT_SHADOW_TYPES_H_
 #define AWS_IOT_SHADOW_TYPES_H_
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /* The config header is always included first. */
 #include "iot_config.h"
 
@@ -637,5 +641,9 @@ typedef struct AwsIotShadowDocumentInfo
  * this flag for Thing Names with any in-progress Shadow update operations.
  */
 #define AWS_IOT_SHADOW_FLAG_REMOVE_UPDATE_SUBSCRIPTIONS    ( 0x00000004UL )
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* ifndef AWS_IOT_SHADOW_TYPES_H_ */

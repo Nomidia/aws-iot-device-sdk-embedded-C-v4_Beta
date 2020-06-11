@@ -31,6 +31,10 @@
 #ifndef IOT_METRICS_H_
 #define IOT_METRICS_H_
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /* The config header is always included first. */
 #include "iot_config.h"
 
@@ -96,5 +100,9 @@ void IotMetrics_Cleanup( void );
 void IotMetrics_GetTcpConnections( void * pContext,
                                    void ( * metricsCallback )( void *, const IotListDouble_t * ) );
 /* @[declare_platform_metrics_gettcpconnections] */
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* ifndef IOT_METRICS_H_ */

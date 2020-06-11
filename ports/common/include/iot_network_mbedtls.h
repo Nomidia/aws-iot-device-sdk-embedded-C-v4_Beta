@@ -28,6 +28,10 @@
 #ifndef IOT_NETWORK_MBEDTLS_H_
 #define IOT_NETWORK_MBEDTLS_H_
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /* The config header is always included first. */
 #include "iot_config.h"
 
@@ -168,5 +172,9 @@ IotNetworkError_t IotNetworkMbedtls_Destroy( IotNetworkConnection_t pConnection 
  * a connection.
  */
 int IotNetworkMbedtls_GetSocket( IotNetworkConnection_t pConnection );
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* ifndef IOT_NETWORK_MBEDTLS_H_ */
