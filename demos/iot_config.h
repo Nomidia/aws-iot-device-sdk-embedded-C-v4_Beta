@@ -27,13 +27,13 @@
 /* Server endpoints used for the demos. May be overridden with command line
  * options at runtime. */
 #define IOT_DEMO_SECURED_CONNECTION    ( true ) /* Command line: -s (secured) or -u (unsecured) */
-#define IOT_DEMO_SERVER                "a1q03082l60f30-ats.iot.us-east-1.amazonaws.com"       /* Command line: -h */
+#define IOT_DEMO_SERVER                "a1wvwov1mgfs5b-ats.iot.ap-south-1.amazonaws.com"       /* Command line: -h */
 #define IOT_DEMO_PORT                  ( 443 )  /* Command line: -p */
 
 /* Credential paths. May be overridden with command line options at runtime. */
 #define IOT_DEMO_ROOT_CA               "/var/fat32_0/certs/AmazonRootCA1.pem" /* Command line: -r */
-#define IOT_DEMO_CLIENT_CERT           "/var/fat32_0/certs/5ecfde13c2-certificate.pem.crt" /* Command line: -c */
-#define IOT_DEMO_PRIVATE_KEY           "/var/fat32_0/certs/5ecfde13c2-private.pem" /* Command line: -k */
+#define IOT_DEMO_CLIENT_CERT           "/var/fat32_0/certs/bootstrap_certificate.crt" /* Command line: -c */
+#define IOT_DEMO_PRIVATE_KEY           "/var/fat32_0/certs/bootstrap_certificate.key" /* Command line: -k */
 #define IOT_DEMO_USER_NAME             "" /* Command line: -m */
 #define IOT_DEMO_PASSWORD              "" /* Command line: -w */
 
@@ -43,7 +43,7 @@
  * generate a unique identifier if no identifier is given). If a specific Thing Name
  * is required please define the following line:
  * #define IOT_DEMO_IDENTIFIER         "" */
-#define IOT_DEMO_IDENTIFIER         "MyIotThing"
+#define IOT_DEMO_IDENTIFIER         "B1Ve1Pc1P1S2"
 
 
 /* MQTT demo configuration. The demo publishes bursts of messages. */
@@ -69,7 +69,7 @@
  * The name for the fleet provisioning template that will be used for provisioning
  * for registering thing in the Provisioning demo applications.
  */
-#define AWS_IOT_DEMO_PROVISIONING_TEMPLATE_NAME                           ""
+#define AWS_IOT_DEMO_PROVISIONING_TEMPLATE_NAME                           "bootstrap_template"
 
 /**
  * List of parameters that will be used for provisioning in the demo application.
@@ -87,7 +87,7 @@
  */
 #define AWS_IOT_DEMO_PROVISIONING_PARAMETER_SERIAL_NUMBER_NAME            "SerialNumber"
 #define AWS_IOT_DEMO_PROVISIONING_PARAMETER_SERIAL_NUMBER_NAME_LENGTH     sizeof( AWS_IOT_DEMO_PROVISIONING_PARAMETER_SERIAL_NUMBER_NAME ) - 1
-#define AWS_IOT_DEMO_PROVISIONING_PARAMETER_SERIAL_NUMBER_VALUE           ""
+#define AWS_IOT_DEMO_PROVISIONING_PARAMETER_SERIAL_NUMBER_VALUE           "B1Ve1Pc1P1S2"
 #define AWS_IOT_DEMO_PROVISIONING_PARAMETER_SERIAL_NUMBER_VALUE_LENGTH    sizeof( AWS_IOT_DEMO_PROVISIONING_PARAMETER_SERIAL_NUMBER_VALUE ) - 1
 #define AWS_IOT_DEMO_PROVISIONING_PARAMETER_2_NAME                        ""
 #define AWS_IOT_DEMO_PROVISIONING_PARAMETER_2_NAME_LENGTH                 sizeof( AWS_IOT_DEMO_PROVISIONING_PARAMETER_2_NAME ) - 1

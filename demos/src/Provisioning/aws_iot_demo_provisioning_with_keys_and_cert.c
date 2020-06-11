@@ -57,7 +57,7 @@
  * Provide default values for undefined configuration settings.
  */
 #ifndef AWS_IOT_DEMO_PROVISIONING_TIMEOUT_PERIOD_MS
-    #define AWS_IOT_DEMO_PROVISIONING_TIMEOUT_PERIOD_MS    ( 5000 )
+    #define AWS_IOT_DEMO_PROVISIONING_TIMEOUT_PERIOD_MS    ( 10000 )
 #endif
 /** @endcond */
 
@@ -418,7 +418,7 @@ int RunProvisioningWithKeysAndCertDemo( bool awsIotMqttMode,
 
     /* The list of parameters that will be used as "context" for provisioning the demo application.
      * This demo will pass exactly 2 different parameter entries for requesting provisioning. */
-    AwsIotProvisioningRequestParameterEntry_t provisioningParameters[ 2 ] = { { 0 } };
+    AwsIotProvisioningRequestParameterEntry_t provisioningParameters[ 1 ] = { { 0 } };
 
     /* Determine if a provisioning template name has been specified. */
     if( ( ( void * ) pTemplateName == NULL ) || ( strlen( pTemplateName ) == 0 ) )
@@ -433,11 +433,7 @@ int RunProvisioningWithKeysAndCertDemo( bool awsIotMqttMode,
         if( ( AWS_IOT_DEMO_PROVISIONING_PARAMETER_SERIAL_NUMBER_NAME == NULL ) ||
             ( AWS_IOT_DEMO_PROVISIONING_PARAMETER_SERIAL_NUMBER_NAME_LENGTH == 0 ) ||
             ( AWS_IOT_DEMO_PROVISIONING_PARAMETER_SERIAL_NUMBER_VALUE == NULL ) ||
-            ( AWS_IOT_DEMO_PROVISIONING_PARAMETER_SERIAL_NUMBER_VALUE_LENGTH == 0 ) ||
-            ( AWS_IOT_DEMO_PROVISIONING_PARAMETER_2_NAME == NULL ) ||
-            ( AWS_IOT_DEMO_PROVISIONING_PARAMETER_2_NAME_LENGTH == 0 ) ||
-            ( AWS_IOT_DEMO_PROVISIONING_PARAMETER_2_VALUE == NULL ) ||
-            ( AWS_IOT_DEMO_PROVISIONING_PARAMETER_2_VALUE_LENGTH == 0 ) )
+            ( AWS_IOT_DEMO_PROVISIONING_PARAMETER_SERIAL_NUMBER_VALUE_LENGTH == 0 ))
         {
             IotLogError( "The provisioning demo requires 2 pairs of name and value data for parameters to be configured." );
             status = EXIT_FAILURE;
@@ -448,10 +444,10 @@ int RunProvisioningWithKeysAndCertDemo( bool awsIotMqttMode,
             provisioningParameters[ 0 ].parameterKeyLength = AWS_IOT_DEMO_PROVISIONING_PARAMETER_SERIAL_NUMBER_NAME_LENGTH;
             provisioningParameters[ 0 ].pParameterValue = AWS_IOT_DEMO_PROVISIONING_PARAMETER_SERIAL_NUMBER_VALUE;
             provisioningParameters[ 0 ].parameterValueLength = AWS_IOT_DEMO_PROVISIONING_PARAMETER_SERIAL_NUMBER_VALUE_LENGTH;
-            provisioningParameters[ 1 ].pParameterKey = AWS_IOT_DEMO_PROVISIONING_PARAMETER_2_NAME;
-            provisioningParameters[ 1 ].parameterKeyLength = AWS_IOT_DEMO_PROVISIONING_PARAMETER_2_NAME_LENGTH;
-            provisioningParameters[ 1 ].pParameterValue = AWS_IOT_DEMO_PROVISIONING_PARAMETER_2_VALUE;
-            provisioningParameters[ 1 ].parameterValueLength = AWS_IOT_DEMO_PROVISIONING_PARAMETER_2_VALUE_LENGTH;
+            //provisioningParameters[ 1 ].pParameterKey = AWS_IOT_DEMO_PROVISIONING_PARAMETER_2_NAME;
+            //provisioningParameters[ 1 ].parameterKeyLength = AWS_IOT_DEMO_PROVISIONING_PARAMETER_2_NAME_LENGTH;
+            //provisioningParameters[ 1 ].pParameterValue = AWS_IOT_DEMO_PROVISIONING_PARAMETER_2_VALUE;
+            //provisioningParameters[ 1 ].parameterValueLength = AWS_IOT_DEMO_PROVISIONING_PARAMETER_2_VALUE_LENGTH;
         }
     }
 
