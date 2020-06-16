@@ -119,6 +119,7 @@ bool AwsIot_GenerateOperationTopic( const AwsIotTopicInfo_t * pTopicInfo,
     {
         pBuffer = *pTopicBuffer;
     }
+    memset(pBuffer, 0x00, bufferLength);
 
     if( status == true )
     {
