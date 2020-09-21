@@ -6,6 +6,9 @@
 extern "C" {
 #endif
 
+/* Standard includes. */
+#include <stdint.h>
+
 /*---------------- Swap and compare-and-swap ------------------*/
 
 /**
@@ -66,7 +69,7 @@ static inline uint32_t Atomic_Add_u32( uint32_t volatile * pAugend,
 static inline uint32_t Atomic_Subtract_u32( uint32_t volatile * pMinuend,
                                                   uint32_t subtrahend )
 {
-    return ( uint32_t ) ( __sync_fetch_and_sub(pAtomic, var) );
+    return ( uint32_t ) ( __sync_fetch_and_sub(pMinuend, subtrahend) );
 }
 
 /*-----------------------------------------------------------*/
@@ -86,7 +89,7 @@ static inline uint32_t Atomic_Increment_u32( uint32_t volatile * pAugend )
  */
 static inline uint32_t Atomic_Decrement_u32( uint32_t volatile * pMinuend )
 {
-    return ( uint32_t ) ( __sync_fetch_and_sub(pAtomic, 1U) );
+    return ( uint32_t ) ( __sync_fetch_and_sub(pMinuend, 1U) );
 }
 
 /*--------------------- Bitwise logic -------------------------*/
