@@ -408,16 +408,24 @@ static bool _getJsonString( const char * pJsonDoc,
 static void _operationCompleteCallback( void * pCallbackContext,
                                         AwsIotJobsCallbackParam_t * pCallbackParam )
 {
+    printf("jiang pCallbackParam->callbackType = %d\n", pCallbackParam->callbackType);
     /* This function is invoked when either a StartNext or Update completes. */
     if( pCallbackParam->callbackType == AWS_IOT_JOBS_START_NEXT_COMPLETE )
     {
         IotLogInfo( "Job StartNext complete with result %s.",
                     AwsIotJobs_strerror( pCallbackParam->u.operation.result ) );
+        //( void ) Atomic_CompareAndSwap_u32( &_exitFlag, JOBS_DEMO_FINISHED, JOBS_DEMO_RUNNING );
     }
     else
     {
         IotLogInfo( "Job Update complete with result %s.",
                     AwsIotJobs_strerror( pCallbackParam->u.operation.result ) );
+    }
+    if(pCallbackParam->u.operation.pResponse)
+    {
+        IotLogInfo( "Received an valid Job document: %.*s",
+                    pCallbackParam->u.operation.responseLength,
+                    pCallbackParam->u.operation.pResponse );
     }
 
     /* If a non-NULL context is given, set the flag to exit the demo. */
@@ -556,10 +564,10 @@ static void _processJob( const AwsIotJobsCallbackParam_t * pJobInfo,
      * Use the StartNext API to set the Job's status to IN_PROGRESS. */
     callbackInfo.function = _operationCompleteCallback;
 
-    status = AwsIotJobs_StartNextAsync( &requestInfo, &updateInfo, 0, &callbackInfo, NULL );
+    //status = AwsIotJobs_StartNextAsync( &requestInfo, &updateInfo, 0, &callbackInfo, NULL );
 
-    IotLogInfo( "Jobs StartNext queued with result %s.", AwsIotJobs_strerror( status ) );
-
+    //IotLogInfo( "Jobs StartNext queued with result %s.", AwsIotJobs_strerror( status ) );
+#if 0
     /* Get the action for this device. */
     if( _getJsonString( pJobDoc,
                         jobDocLength,
@@ -602,6 +610,9 @@ static void _processJob( const AwsIotJobsCallbackParam_t * pJobInfo,
         /* The given Job document is not valid for this demo. */
         updateInfo.newStatus = AWS_IOT_JOB_STATE_FAILED;
     }
+#endif
+    callbackInfo.pCallbackContext = JOBS_DEMO_SHOULD_EXIT;
+    updateInfo.newStatus = AWS_IOT_JOB_STATE_SUCCEEDED;
 
     IotLogInfo( "Setting state of %.*s to %s.",
                 jobIdLength,
@@ -610,6 +621,7 @@ static void _processJob( const AwsIotJobsCallbackParam_t * pJobInfo,
 
     /* Tell the Jobs service that the device has finished the Job. */
     status = AwsIotJobs_UpdateAsync( &requestInfo, &updateInfo, 0, &callbackInfo, NULL );
+    //( void ) Atomic_CompareAndSwap_u32( &_exitFlag, JOBS_DEMO_FINISHED, JOBS_DEMO_RUNNING );
 
     IotLogInfo( "Jobs Update queued with result %s.", AwsIotJobs_strerror( status ) );
 }
@@ -623,6 +635,9 @@ static void _processJob( const AwsIotJobsCallbackParam_t * pJobInfo,
  * @param[in] pCallbackContext Ignored.
  * @param[in] pCallbackInfo Contains the received Job.
  */
+ 
+static char _pJobIds[ 2 ][ 64 + 1 ] = { { 0 } };
+static size_t _pJobIdLengths[ 2 ] = { 0 };
 static void _jobsCallback( void * pCallbackContext,
                            AwsIotJobsCallbackParam_t * pCallbackInfo )
 {
@@ -639,10 +654,117 @@ static void _jobsCallback( void * pCallbackContext,
 
     /* Silence warnings about unused parameters. */
     ( void ) pCallbackContext;
+    const char * pDocument;
+    size_t documentLength;
+    printf("_jobsCallback pCallbackInfo->callbackType=%d\n", pCallbackInfo->callbackType);
+    if(pCallbackInfo->callbackType == AWS_IOT_JOBS_START_NEXT_COMPLETE 
+        || pCallbackInfo->callbackType == AWS_IOT_JOBS_GET_PENDING_COMPLETE
+        || pCallbackInfo->callbackType == AWS_IOT_JOBS_DESCRIBE_COMPLETE
+        || pCallbackInfo->callbackType == AWS_IOT_JOBS_UPDATE_COMPLETE)
+    {
+        pDocument = pCallbackInfo->u.operation.pResponse;
+        documentLength = pCallbackInfo->u.operation.responseLength;
+    }
+    else if(pCallbackInfo->callbackType == AWS_IOT_JOBS_NOTIFY_NEXT_CALLBACK)
+    {
+        pDocument = pCallbackInfo->u.callback.pDocument;
+        documentLength = pCallbackInfo->u.callback.documentLength;
+    }
+    else
+        return;
 
+    AwsIotJobsCallbackInfo_t callbackInfo = AWS_IOT_JOBS_CALLBACK_INFO_INITIALIZER;
+    AwsIotJobsRequestInfo_t requestInfo = AWS_IOT_JOBS_REQUEST_INFO_INITIALIZER;
+    AwsIotJobsUpdateInfo_t updateInfo = AWS_IOT_JOBS_UPDATE_INFO_INITIALIZER;
+    /* Initialize the common parameter of Jobs requests. */
+    requestInfo.mqttConnection = pCallbackInfo->mqttConnection;
+    requestInfo.pThingName = pCallbackInfo->pThingName;
+    requestInfo.thingNameLength = pCallbackInfo->thingNameLength;
+
+    IotLogWarn( "Received jobs get pending document: %.*s",
+            documentLength,
+            pDocument );
+
+    if(pCallbackInfo->callbackType == AWS_IOT_JOBS_GET_PENDING_COMPLETE)
+    {
+        bool toGetDocument = true;
+        bool status = false;
+        const char * pInProgressJobs = NULL, * pParseStart = NULL;
+        size_t inProgressJobsLength = 0, parseLength = 0;
+
+        status = AwsIotDocParser_FindValue( pDocument,
+                                            documentLength,
+                                            "inProgressJobs", 14,
+                                            &pInProgressJobs,
+                                            &inProgressJobsLength );
+
+        if(!status) {
+            toGetDocument = false;;
+            printf("no inProgressJobs\n");
+        }
+
+        if(inProgressJobsLength > 2) {
+            //toGetDocument = false;
+            printf("In-progress Jobs detected. quit\n");
+        }
+        /* Parse for the list of queued Jobs. This is where parsing for Job IDs will
+         * start. */
+        status = AwsIotDocParser_FindValue( pDocument,
+                                            documentLength,
+                                            "queuedJobs",
+                                            10,
+                                            &pParseStart,
+                                            &parseLength );
+        if(!status) {
+            toGetDocument = false;
+            printf("no queuedJobs\n");
+        }
+
+        int i = 0;
+        /* Parse the Job IDs of the first two queued Jobs. */
+        for( i = 0; i < 2; i++ )
+        {
+            status = AwsIotDocParser_FindValue( pParseStart,
+                                                parseLength,
+                                                "jobId",
+                                                5,
+                                                &pJobId,
+                                                &jobIdLength );
+
+            if(!status) {
+                toGetDocument = false;
+                printf("no jobId\n");
+                break;
+            }
+            /* Copy the Job ID, excluding the quotes. Save its length too. */
+            ( void ) memcpy( _pJobIds[ i ], pJobId + 1, jobIdLength - 2 );
+            _pJobIdLengths[ i ] = jobIdLength - 2;
+        
+            /* To find the next Job ID, it's sufficient to search again after the current one. */
+            parseLength -= ( pJobId - pParseStart );
+            pParseStart = pJobId;
+        }
+
+        if(_pJobIdLengths[0] > 0) {
+            /* Initialize the common parameter of Jobs requests. */
+            AwsIotJobsOperation_t operation = AWS_IOT_JOBS_OPERATION_INITIALIZER;
+            callbackInfo.function = _jobsCallback;
+
+            printf("query jobid: %.*s\n", _pJobIdLengths[0], _pJobIds[0]);
+            requestInfo.pJobId = _pJobIds[0];
+            requestInfo.jobIdLength = _pJobIdLengths[0];
+
+            updateInfo.newStatus = AWS_IOT_JOB_STATE_IN_PROGRESS;
+            updateInfo.includeJobDocument = true;
+            status = AwsIotJobs_UpdateAsync( &requestInfo, &updateInfo, 0, &callbackInfo, &operation );
+            IotLogInfo( "Jobs Describe with result %s.", AwsIotJobs_strerror( status ) );
+        }
+        return;
+    }
+    
     /* Get the Job ID. */
-    idKeyFound = _getJsonString( pCallbackInfo->u.callback.pDocument,
-                                 pCallbackInfo->u.callback.documentLength,
+    idKeyFound = _getJsonString( pDocument,
+                                 documentLength,
                                  JOB_ID_KEY,
                                  JOB_ID_KEY_LENGTH,
                                  &pJobId,
@@ -665,6 +787,15 @@ static void _jobsCallback( void * pCallbackContext,
             IotLogInfo( "Job %.*s received.", jobIdLength, pJobId );
         }
     }
+    else
+    {
+        if(_pJobIdLengths[0] > 0)
+        {
+            jobIdLength = _pJobIdLengths[0];
+            pJobId = _pJobIds[0];
+            idKeyFound = true;
+        }
+    }
 
     /* Get the Job document.
      *
@@ -674,14 +805,17 @@ static void _jobsCallback( void * pCallbackContext,
      * footprint rather than checking for correctness of the document. This
      * parser is not meant to be used as a general purpose JSON parser.
      */
-    docKeyFound = AwsIotDocParser_FindValue( pCallbackInfo->u.callback.pDocument,
-                                             pCallbackInfo->u.callback.documentLength,
+    docKeyFound = AwsIotDocParser_FindValue( pDocument,
+                                             documentLength,
                                              JOB_DOC_KEY,
                                              JOB_DOC_KEY_LENGTH,
                                              &pJobDoc,
                                              &jobDocLength );
 
     /* When both the Job ID and Job document are available, process the Job. */
+    printf("idKeyFound=%d docKeyFound=%d\n", idKeyFound, docKeyFound);
+    //( void ) Atomic_CompareAndSwap_u32( &_exitFlag, JOBS_DEMO_FINISHED, JOBS_DEMO_RUNNING );
+
     if( ( idKeyFound == true ) && ( docKeyFound == true ) )
     {
         /* Process the Job document. */
@@ -708,8 +842,8 @@ static void _jobsCallback( void * pCallbackContext,
         else
         {
             IotLogWarn( "Received an invalid Job document: %.*s",
-                        pCallbackInfo->u.callback.documentLength,
-                        pCallbackInfo->u.callback.pDocument );
+                        documentLength,
+                        pDocument );
         }
     }
 }
@@ -729,6 +863,7 @@ static void _jobsCallback( void * pCallbackContext,
  *
  * @return `EXIT_SUCCESS` if the demo completes successfully; `EXIT_FAILURE` otherwise.
  */
+ #if 0
 int RunJobsDemo( bool awsIotMqttMode,
                  const char * pIdentifier,
                  void * pNetworkServerInfo,
@@ -801,7 +936,7 @@ int RunJobsDemo( bool awsIotMqttMode,
             connected = true;
         }
     }
-
+#if 0
     /* Set the Jobs Notify Next callback. This callback waits for the next available Job. */
     if( status == EXIT_SUCCESS )
     {
@@ -823,7 +958,7 @@ int RunJobsDemo( bool awsIotMqttMode,
             status = EXIT_FAILURE;
         }
     }
-
+#endif
     /* Wait for incoming Jobs. */
     if( status == EXIT_SUCCESS )
     {
@@ -852,21 +987,71 @@ int RunJobsDemo( bool awsIotMqttMode,
                 "\r\n"
                 "/*-----------------------------------------------------------*/\r\n" );
 
+        /* Initialize the common parameter of Jobs requests. */
+        AwsIotJobsOperation_t startNextOperation = AWS_IOT_JOBS_OPERATION_INITIALIZER;
+        AwsIotJobsRequestInfo_t requestInfo = AWS_IOT_JOBS_REQUEST_INFO_INITIALIZER;
+        AwsIotJobsUpdateInfo_t updateInfo = AWS_IOT_JOBS_UPDATE_INFO_INITIALIZER;
+
+        updateInfo.newStatus = AWS_IOT_JOB_STATE_IN_PROGRESS;
+        updateInfo.expectedVersion = AWS_IOT_JOBS_NO_VERSION;
+        updateInfo.executionNumber = AWS_IOT_JOBS_NO_EXECUTION_NUMBER;
+        updateInfo.stepTimeoutInMinutes = AWS_IOT_JOBS_NO_TIMEOUT;
+        updateInfo.includeJobExecutionState = false;
+        updateInfo.includeJobDocument = false;
+        updateInfo.pStatusDetails = AWS_IOT_JOBS_NO_STATUS_DETAILS;
+
+        requestInfo.mqttConnection = mqttConnection;
+        requestInfo.pThingName = pIdentifier;
+        requestInfo.thingNameLength = thingNameLength;
+        
+        /* Tell the Jobs service that the device has started working on the Job.
+         * Use the StartNext API to set the Job's status to IN_PROGRESS. */
+        callbackInfo.function = _jobsCallback;
+
+        //sleep(5);
+        status = AwsIotJobs_StartNextAsync( &requestInfo, &updateInfo, 0, &callbackInfo, &startNextOperation );
+        
+        IotLogInfo( "Jobs StartNext queued with result %s.", AwsIotJobs_strerror( status ) );
+
+        AwsIotJobsError_t status = AWS_IOT_JOBS_SUCCESS;
+        
+        callbackInfo.function = _operationCompleteCallback;
+        callbackInfo.pCallbackContext = JOBS_DEMO_SHOULD_EXIT;
+        
+        /* Initialize the common parameter of Jobs requests. */
+        requestInfo.mqttConnection = mqttConnection;
+        requestInfo.pThingName = pIdentifier;
+        requestInfo.thingNameLength = thingNameLength;
+        requestInfo.pJobId = "PTZ_ProductPTZ_2_60012";
+        requestInfo.jobIdLength = strlen("PTZ_ProductPTZ_2_60012");
+        
+        updateInfo.newStatus = AWS_IOT_JOB_STATE_IN_PROGRESS;
+        //sleep(5);
+        /* Tell the Jobs service that the device has finished the Job. */
+        //status = AwsIotJobs_UpdateAsync( &requestInfo, &updateInfo, 0, &callbackInfo, NULL );
+        //IotLogInfo( "Jobs Update queued with result %s.", AwsIotJobs_strerror( status ) );
+
         /* Wait until a Job with { "action": "exit" } is received. */
         while( Atomic_CompareAndSwap_u32( &_exitFlag, 0, JOBS_DEMO_FINISHED ) == 0 )
         {
             IotClock_SleepMs( 1000 );
         }
+        status = EXIT_SUCCESS;
+        printf( "Atomic_CompareAndSwap_u32 end\n");
     }
 
+#if 0
+    printf( "Stop Jobs StartNext queued 0000\n");
     /* Remove the Jobs Notify Next callback. */
     if( status == EXIT_SUCCESS )
     {
+        printf( "Stop Jobs StartNext queued 1111\n");
         /* Specify that the _jobsCallback function should be replaced with NULL,
          * i.e. removed. */
+        printf( "Stop Jobs StartNext queued 2222\n");
         callbackInfo.function = NULL;
         callbackInfo.oldFunction = _jobsCallback;
-
+        printf( "Stop Jobs StartNext queued 3333\n");
         callbackStatus = AwsIotJobs_SetNotifyNextCallback( mqttConnection,
                                                            pIdentifier,
                                                            thingNameLength,
@@ -878,7 +1063,7 @@ int RunJobsDemo( bool awsIotMqttMode,
                     pIdentifier,
                     AwsIotJobs_strerror( callbackStatus ) );
     }
-
+#endif
     /* Disconnect the MQTT connection and clean up the demo. */
     if( connected == true )
     {
@@ -892,5 +1077,172 @@ int RunJobsDemo( bool awsIotMqttMode,
 
     return status;
 }
+#else
+ int RunJobsDemo( bool awsIotMqttMode,
+                  const char * pIdentifier,
+                  void * pNetworkServerInfo,
+                  void * pNetworkCredentialInfo,
+                  const IotNetworkInterface_t * pNetworkInterface )
+ {
+     /* Return value of this function and the exit status of this program. */
+     int status = EXIT_SUCCESS;
+ 
+     /* Handle of the MQTT connection used in this demo. */
+     IotMqttConnection_t mqttConnection = IOT_MQTT_CONNECTION_INITIALIZER;
+ 
+     /* Length of Jobs Thing Name. */
+     size_t thingNameLength = 0;
+ 
+     /* The function that will be set as the Jobs Notify Next callback. */
+     AwsIotJobsCallbackInfo_t callbackInfo = AWS_IOT_JOBS_CALLBACK_INFO_INITIALIZER;
+ 
+     /* Status returned by the functions to set the Notify Next callback. */
+     AwsIotJobsError_t callbackStatus = AWS_IOT_JOBS_SUCCESS;
+ 
+     /* Flags for tracking which cleanup functions must be called. */
+     bool initialized = false, connected = false;
+ 
+     /* The first parameter of this demo function is not used. Jobs are specific
+      * to AWS IoT, so this value is hardcoded to true whenever needed. */
+     ( void ) awsIotMqttMode;
+ 
+     /* Determine the length of the Thing Name. */
+     if( pIdentifier != NULL )
+     {
+         thingNameLength = strlen( pIdentifier );
+ 
+         if( thingNameLength == 0 )
+         {
+             IotLogError( "The length of the Thing Name (identifier) must be nonzero." );
+ 
+             status = EXIT_FAILURE;
+         }
+     }
+     else
+     {
+         IotLogError( "A Thing Name (identifier) must be provided for the Jobs demo." );
+ 
+         status = EXIT_FAILURE;
+     }
+ 
+     /* Initialize the libraries required for this demo. */
+     if( status == EXIT_SUCCESS )
+     {
+         status = _initializeDemo();
+ 
+         if( status == EXIT_SUCCESS )
+         {
+             initialized = true;
+         }
+     }
 
+     /* Establish the MQTT connection used in this demo. */
+     if( status == EXIT_SUCCESS )
+     {
+         status = _establishMqttConnection( pIdentifier,
+                                            pNetworkServerInfo,
+                                            pNetworkCredentialInfo,
+                                            pNetworkInterface,
+                                            &mqttConnection );
+ 
+         if( status == EXIT_SUCCESS )
+         {
+             connected = true;
+         }
+     }
+     /* Wait for incoming Jobs. */
+     if( status == EXIT_SUCCESS )
+     {
+         IotLog( IOT_LOG_INFO, &_logHideAll,
+                 "\r\n"
+                 "/*-----------------------------------------------------------*/\r\n"
+                 "\r\n"
+                 "The Jobs demo is now ready to accept Jobs.\r\n"
+                 "Jobs may be created using the AWS IoT console or AWS CLI.\r\n"
+                 "See the following link for more information.\r\n"
+                 "\r\n"
+                 "https://docs.aws.amazon.com/cli/latest/reference/iot/create-job.html\r\n"
+                 "\r\n"
+                 "This demo expects Job documents to have an \"action\" JSON key.\r\n"
+                 "The following actions are currently supported:\r\n"
+                 " - print\r\n"
+                 "   Logs a message to the local console. The Job document must also contain a \"message\".\r\n"
+                 "   For example: { \"action\": \"print\", \"message\": \"Hello world!\"} will cause\r\n"
+                 "   \"Hello world!\" to be printed on the console.\r\n"
+                 " - publish\r\n"
+                 "   Publishes a message to an MQTT topic. The Job document must also contain a \"message\" and \"topic\".\r\n"
+                 "   For example: { \"action\": \"publish\", \"topic\": \"demo/jobs\", \"message\": \"Hello world!\"} will cause\r\n"
+                 "   \"Hello world!\" to be published to the topic \"demo/jobs\".\r\n"
+                 " - exit\r\n"
+                 "   Exits the demo program. This program will run until { \"action\": \"exit\" } is received.\r\n"
+                 "\r\n"
+                 "/*-----------------------------------------------------------*/\r\n" );
+ 
+         /* Initialize the common parameter of Jobs requests. */
+         AwsIotJobsOperation_t startNextOperation = AWS_IOT_JOBS_OPERATION_INITIALIZER;
+         AwsIotJobsRequestInfo_t requestInfo = AWS_IOT_JOBS_REQUEST_INFO_INITIALIZER;
+         AwsIotJobsUpdateInfo_t updateInfo = AWS_IOT_JOBS_UPDATE_INFO_INITIALIZER;
+ 
+         updateInfo.newStatus = AWS_IOT_JOB_STATE_IN_PROGRESS;
+         updateInfo.expectedVersion = AWS_IOT_JOBS_NO_VERSION;
+         updateInfo.executionNumber = AWS_IOT_JOBS_NO_EXECUTION_NUMBER;
+         updateInfo.stepTimeoutInMinutes = AWS_IOT_JOBS_NO_TIMEOUT;
+         updateInfo.includeJobExecutionState = false;
+         updateInfo.includeJobDocument = false;
+         updateInfo.pStatusDetails = AWS_IOT_JOBS_NO_STATUS_DETAILS;
+ 
+         requestInfo.mqttConnection = mqttConnection;
+         requestInfo.pThingName = pIdentifier;
+         requestInfo.thingNameLength = thingNameLength;
+         
+         /* Tell the Jobs service that the device has started working on the Job.
+          * Use the StartNext API to set the Job's status to IN_PROGRESS. */
+         callbackInfo.function = _jobsCallback;
+ 
+         //sleep(5);
+         //status = AwsIotJobs_StartNextAsync( &requestInfo, &updateInfo, 0, &callbackInfo, &startNextOperation );
+         status = AwsIotJobs_GetPendingAsync( &requestInfo, 0, &callbackInfo, &startNextOperation );
+         IotLogInfo( "Jobs GetPending queued with result %s.", AwsIotJobs_strerror( status ) );
+ 
+         AwsIotJobsError_t status = AWS_IOT_JOBS_SUCCESS;
+         
+         callbackInfo.function = _operationCompleteCallback;
+         callbackInfo.pCallbackContext = JOBS_DEMO_SHOULD_EXIT;
+         
+         /* Initialize the common parameter of Jobs requests. */
+         requestInfo.mqttConnection = mqttConnection;
+         requestInfo.pThingName = pIdentifier;
+         requestInfo.thingNameLength = thingNameLength;
+         requestInfo.pJobId = "PTZ_ProductPTZ_2_60012";
+         requestInfo.jobIdLength = strlen("PTZ_ProductPTZ_2_60012");
+         
+         updateInfo.newStatus = AWS_IOT_JOB_STATE_IN_PROGRESS;
+         //sleep(5);
+         /* Tell the Jobs service that the device has finished the Job. */
+         //status = AwsIotJobs_UpdateAsync( &requestInfo, &updateInfo, 0, &callbackInfo, NULL );
+         //IotLogInfo( "Jobs Update queued with result %s.", AwsIotJobs_strerror( status ) );
+ 
+         /* Wait until a Job with { "action": "exit" } is received. */
+         while( Atomic_CompareAndSwap_u32( &_exitFlag, 0, JOBS_DEMO_FINISHED ) == 0 )
+         {
+             IotClock_SleepMs( 1000 );
+         }
+         status = EXIT_SUCCESS;
+         printf( "Atomic_CompareAndSwap_u32 end\n");
+     }
+ 
+     /* Disconnect the MQTT connection and clean up the demo. */
+     if( connected == true )
+     {
+         IotMqtt_Disconnect( mqttConnection, 0 );
+     }
+ 
+     if( initialized == true )
+     {
+         _cleanupDemo();
+     }
+ 
+     return status;
+ }
+#endif
 /*-----------------------------------------------------------*/

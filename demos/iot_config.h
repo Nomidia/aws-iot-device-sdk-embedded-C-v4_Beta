@@ -35,9 +35,9 @@ extern "C" {
 #define IOT_DEMO_PORT                  ( 443 )  /* Command line: -p */
 
 /* Credential paths. May be overridden with command line options at runtime. */
-#define IOT_DEMO_ROOT_CA               "/var/fat32_0/certs/AmazonRootCA1.pem" /* Command line: -r */
-#define IOT_DEMO_CLIENT_CERT           "/var/fat32_0/certs/bootstrap_certificate.crt" /* Command line: -c */
-#define IOT_DEMO_PRIVATE_KEY           "/var/fat32_0/certs/bootstrap_certificate.key" /* Command line: -k */
+#define IOT_DEMO_ROOT_CA               "/usr/data/certs/AmazonRootCA1.pem" /* Command line: -r */
+#define IOT_DEMO_CLIENT_CERT           "/mnt/mtd/Config/iotcerts/deviceCertificate.crt" /* Command line: -c */
+#define IOT_DEMO_PRIVATE_KEY           "/mnt/mtd/Config/iotcerts/deviceCertificate.key" /* Command line: -k */
 #define IOT_DEMO_USER_NAME             "" /* Command line: -m */
 #define IOT_DEMO_PASSWORD              "" /* Command line: -w */
 
@@ -47,7 +47,7 @@ extern "C" {
  * generate a unique identifier if no identifier is given). If a specific Thing Name
  * is required please define the following line:
  * #define IOT_DEMO_IDENTIFIER         "" */
-#define IOT_DEMO_IDENTIFIER         "B1Ve1Pc1P1S2"
+#define IOT_DEMO_IDENTIFIER         "B1Ve1Pc1P1S22"
 
 
 /* MQTT demo configuration. The demo publishes bursts of messages. */
@@ -119,7 +119,7 @@ extern "C" {
 #define IOT_LOG_LEVEL_MQTT                                                IOT_LOG_INFO
 #define AWS_IOT_LOG_LEVEL_SHADOW                                          IOT_LOG_INFO
 #define AWS_IOT_LOG_LEVEL_DEFENDER                                        IOT_LOG_INFO
-#define AWS_IOT_LOG_LEVEL_JOBS                                            IOT_LOG_INFO
+#define AWS_IOT_LOG_LEVEL_JOBS                                            IOT_LOG_DEBUG
 #define AWS_IOT_LOG_LEVEL_PROVISIONING                                    IOT_LOG_INFO
 
 /* Default assert and memory allocation functions. */
