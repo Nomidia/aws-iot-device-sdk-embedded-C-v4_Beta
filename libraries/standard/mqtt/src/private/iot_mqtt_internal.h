@@ -221,7 +221,7 @@ extern "C" {
     #define IOT_MQTT_ENABLE_SERIALIZER_OVERRIDES    ( 0 )
 #endif
 #ifndef IOT_MQTT_RESPONSE_WAIT_MS
-    #define IOT_MQTT_RESPONSE_WAIT_MS               ( 1000U )
+    #define IOT_MQTT_RESPONSE_WAIT_MS               ( 5000U )
 #endif
 #ifndef IOT_MQTT_RETRY_MS_CEILING
     #define IOT_MQTT_RETRY_MS_CEILING               ( 60000U )
