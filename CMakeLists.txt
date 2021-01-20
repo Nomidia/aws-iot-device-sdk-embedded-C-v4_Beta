@@ -12,11 +12,6 @@ set_property( GLOBAL PROPERTY USE_FOLDERS ON )
 set( CMAKE_C_STANDARD 99 )
 set( CMAKE_C_STANDARD_REQUIRED ON )
 
-if(IOT_NETWORK_USE_OPENSSL)
-	set(OPENSSL_CRYPTO_LIBRARY "${PROJECT_SOURCE_DIR}/third_party/openssl/lib/libcrypto.so")
-	set(OPENSSL_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/third_party/openssl/include")
-	set(OPENSSL_SSL_LIBRARY "${PROJECT_SOURCE_DIR}/third_party/openssl/lib/libssl.so")
-endif()
 # Do not allow in-source build.
 if( ${PROJECT_SOURCE_DIR} STREQUAL ${PROJECT_BINARY_DIR} )
     message( FATAL_ERROR "In-source build is not allowed. Please build in a separate directory, such as ${PROJECT_SOURCE_DIR}/build." )
@@ -50,7 +45,12 @@ if( NOT DEFINED IOT_PLATFORM_NAME )
         # Provide an option to use the OpenSSL network abstraction on Linux.
         option( IOT_NETWORK_USE_OPENSSL
                 "Set this to ON to use a network abstraction implemented on OpenSSL. When OFF, the mbed TLS network abstraction is used."
-                OFF )
+				OFF )
+		if(IOT_NETWORK_USE_OPENSSL)
+			set(OPENSSL_CRYPTO_LIBRARY "${PROJECT_SOURCE_DIR}/third_party/openssl/lib/libcrypto.so")
+			set(OPENSSL_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/third_party/openssl/include")
+			set(OPENSSL_SSL_LIBRARY "${PROJECT_SOURCE_DIR}/third_party/openssl/lib/libssl.so")
+		endif()
     else()
         message( FATAL_ERROR "${CMAKE_SYSTEM_NAME} is not a supported platform." )
     endif()
