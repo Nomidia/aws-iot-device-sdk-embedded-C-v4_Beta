@@ -837,7 +837,9 @@ void _IotMqtt_ProcessKeepAlive( IotTaskPool_t pTaskPool,
     IotMqtt_Assert( ( pPingreqOperation->u.operation.periodic.ping.nextPeriodMs ==
                       pPingreqOperation->u.operation.periodic.ping.keepAliveMs ) ||
                     ( pPingreqOperation->u.operation.periodic.ping.nextPeriodMs
-                      == IOT_MQTT_RESPONSE_WAIT_MS ) );
+                      == IOT_MQTT_RESPONSE_WAIT_MS ) ||
+                      (pPingreqOperation->u.operation.periodic.ping.nextPeriodMs %
+                      IOT_MQTT_RESPONSE_WAIT_MS == 0));
 
     IotLogDebug( "(MQTT connection %p) Keep-alive job started.", pMqttConnection );
 
@@ -920,24 +922,35 @@ void _IotMqtt_ProcessKeepAlive( IotTaskPool_t pTaskPool,
              * Call 3 - Next PINGREQ is sent. Time difference between Call 2 and
              * Call 3 is KeepAliveMS - WaitMS, while time difference between Call 1
              * and Call 3 is KeepAliveMS. */
-            pPingreqOperation->u.operation.periodic.ping.nextPeriodMs =
-                pPingreqOperation->u.operation.periodic.ping.keepAliveMs;
-
             IotMqtt_Assert( pPingreqOperation->u.operation.periodic.ping.keepAliveMs
-                            > IOT_MQTT_RESPONSE_WAIT_MS );
+                            > pPingreqOperation->u.operation.periodic.ping.nextPeriodMs );
 
             /* Subtract time taken for PINGRESP check. */
             scheduleDelay = pPingreqOperation->u.operation.periodic.ping.keepAliveMs
-                            - IOT_MQTT_RESPONSE_WAIT_MS;
+                            - pPingreqOperation->u.operation.periodic.ping.nextPeriodMs;
+
+            pPingreqOperation->u.operation.periodic.ping.nextPeriodMs =
+                pPingreqOperation->u.operation.periodic.ping.keepAliveMs;
         }
         else
         {
-            IotLogError( "(MQTT connection %p) Failed to receive PINGRESP within %d ms.",
-                         pMqttConnection,
-                         IOT_MQTT_RESPONSE_WAIT_MS );
+            if( (pPingreqOperation->u.operation.periodic.ping.nextPeriodMs + IOT_MQTT_RESPONSE_WAIT_MS <
+                pPingreqOperation->u.operation.periodic.ping.keepAliveMs) &&
+                (pPingreqOperation->u.operation.periodic.ping.nextPeriodMs + IOT_MQTT_RESPONSE_WAIT_MS < 
+                IOT_MQTT_RESPONSE_RETRY_MS))
+            {
+                pPingreqOperation->u.operation.periodic.ping.nextPeriodMs += IOT_MQTT_RESPONSE_WAIT_MS;
+                scheduleDelay = IOT_MQTT_RESPONSE_WAIT_MS;
+            }
+            else
+            {
+                IotLogError( "(MQTT connection %p) Failed to receive PINGRESP within %d ms.",
+                             pMqttConnection,
+                             pPingreqOperation->u.operation.periodic.ping.nextPeriodMs );
 
-            /* The network receive callback did not clear the failure flag. */
-            status = false;
+                /* The network receive callback did not clear the failure flag. */
+                status = false;
+            }
         }
     }
 
