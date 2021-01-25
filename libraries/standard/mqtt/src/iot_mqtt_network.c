@@ -750,7 +750,13 @@ void _IotMqtt_CloseNetworkConnection( IotMqttDisconnectReason_t disconnectReason
 
         /* PINGREQ provides a reference to the connection, so reference count must
          * be nonzero. */
-        IotMqtt_Assert( pMqttConnection->references > 0 );
+        //IotMqtt_Assert( pMqttConnection->references > 0 );
+        /* If keep-alive timeout, and user calls destroyMqtt, the references can be 0*/
+        if(pMqttConnection->references < 1)
+        {
+            IotMutex_Unlock( &( pMqttConnection->referencesMutex ) );
+            return;
+        }
 
         /* Attempt to cancel the keep-alive job. */
         taskPoolStatus = IotTaskPool_TryCancel( IOT_SYSTEM_TASKPOOL,
