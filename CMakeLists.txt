@@ -1,5 +1,4 @@
 # Project information.
-include (config.cmake)
 cmake_minimum_required( VERSION 3.5.0 )
 project( AwsIotDeviceSdkEmbeddedC
          VERSION 4.0.0
