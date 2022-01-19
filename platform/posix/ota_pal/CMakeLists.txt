@@ -8,6 +8,7 @@ target_include_directories( ota_pal
     INTERFACE
         ${CMAKE_CURRENT_LIST_DIR}/source/include
         ${LOGGING_INCLUDE_DIRS}
+        ${OPENSSL_INCLUDE_DIR}
 )
 
 target_link_libraries( ota_pal

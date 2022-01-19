@@ -12,7 +12,8 @@ target_include_directories( sockets_posix
                             PUBLIC
                                 ${COMMON_TRANSPORT_INCLUDE_PUBLIC_DIRS}
                                 ${LOGGING_INCLUDE_DIRS}
-                                ${TRANSPORT_INTERFACE_INCLUDE_DIR} )
+                                ${TRANSPORT_INTERFACE_INCLUDE_DIR}
+                                ${OPENSSL_INCLUDE_DIR} )
 
 # Create target for plaintext transport.
 add_library( plaintext_posix

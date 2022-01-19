@@ -29,6 +29,10 @@ set(PLATFORM_DIR "${ROOT_DIR}/platform" CACHE INTERNAL "C SDK platform root.")
 set(MODULES_DIR "${ROOT_DIR}/libraries" CACHE INTERNAL "C SDK modules root.")
 set(3RDPARTY_DIR "${MODULES_DIR}/3rdparty" CACHE INTERNAL "3rdparty libraries root.")
 
+set(OPENSSL_CRYPTO_LIBRARY "${3RDPARTY_DIR}/openssl/lib/libcrypto.so")
+set(OPENSSL_INCLUDE_DIR "${3RDPARTY_DIR}/openssl/include")
+set(OPENSSL_SSL_LIBRARY "${3RDPARTY_DIR}/openssl/lib/libssl.so")
+
 include( "demos/logging-stack/logging.cmake" )
 
 # Configure options to always show in CMake GUI.
