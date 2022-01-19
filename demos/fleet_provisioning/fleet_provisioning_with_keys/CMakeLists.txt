@@ -23,7 +23,6 @@ add_executable( ${DEMO_NAME}
 
 target_link_libraries( ${DEMO_NAME} PRIVATE
                        tinycbor
-                       mbedtls
                        clock_posix
                        openssl_posix )
 
@@ -42,9 +41,10 @@ set_macro_definitions(TARGETS ${DEMO_NAME}
                         "ROOT_CA_CERT_PATH"
                         "CLAIM_CERT_PATH"
                         "CLAIM_PRIVATE_KEY_PATH"
+                        "CLIENT_CERT_PATH"
+                        "CLIENT_PRIVATE_KEY_PATH"
                         "PROVISIONING_TEMPLATE_NAME"
                         "DEVICE_SERIAL_NUMBER"
-                        "CSR_SUBJECT_NAME"
                         "CLIENT_IDENTIFIER"
                         "OS_NAME"
                         "OS_VERSION"
